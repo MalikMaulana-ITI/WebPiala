@@ -1,0 +1,87 @@
+@import 'tailwindcss';
+@plugin "flowbite/plugin";
+@source "../../node_modules/flowbite";
+
+
+@source "../views";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+    --font-sans: 'Creato Display', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+:root {
+    --color-primary: #99e39e;
+    --color-background-primary: #000510;
+
+    --blob-color-1: #3B82F6;
+    --blob-color-2: #8B5CF6;
+    --blob-color-3: #EC4899;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+/* Custom scrollbar for better appearance in dark mode */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #4a5568; /* bg-gray-700 */
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #6b7280; /* bg-gray-600 */
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af; /* bg-gray-500 */
+}
+
+ /* Overlay specific styles */
+#filterOverlay {
+    transition: opacity 0.3s ease-out; /* Transisi untuk latar belakang overlay */
+    visibility: hidden; /* Awalnya tersembunyi sepenuhnya */
+    opacity: 0; /* Awalnya tidak terlihat */
+}
+
+#filterOverlay.show {
+    visibility: visible;
+    opacity: 1; /* Menjadi terlihat */
+}
+
+.overlay-panel {
+    transition: transform 0.3s ease-out; /* Transisi untuk panel */
+    transform: translateX(-100%); /* Awalnya di luar layar kanan */
+}
+
+.overlay-panel.active {
+    transform: translateX(0); /* Slide in */
+}
+
+/* Ensure body doesn't scroll when overlay is active */
+body.no-scroll {
+    overflow: hidden;
+}
+
+button {  	
+    cursor: pointer;
+}
+
+.cursor-not-allowed {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+
+
