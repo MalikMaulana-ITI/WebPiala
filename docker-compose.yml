@@ -1,0 +1,92 @@
+services:
+  # Layanan Aplikasi (PHP)
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: laravel_app
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel-net
+    # Perubahan penting: Tunggu sampai 'db' benar-benar sehat
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Layanan Web Server (Nginx)
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: laravel_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - laravel-net
+    depends_on:
+      - app
+
+  # Layanan Database (MySQL) dengan Healthcheck
+  db:
+    image: mysql:8.0
+    container_name: laravel_db
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: laravel_db
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - laravel-net
+    # Perubahan penting: Pemeriksaan kesehatan database
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Layanan Vite
+  vite:
+    build:
+      context: .
+      dockerfile: docker/vite/Dockerfile
+    container_name: laravel_vite
+    restart: unless-stopped
+    working_dir: /var/www
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel-net
+    depends_on:
+      - app # Vite bisa dimulai setelah app siap
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: laravel_ngrok_service
+    restart: unless-stopped
+    ports:
+      - "4040:4040" # Untuk mengakses dashboard Ngrok
+    environment:
+      # Membaca token dari file .env
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    # Perintah untuk membuat tunnel ke layanan 'nginx' di port 80
+    command: http nginx:80
+    networks:
+      - laravel-net
+    depends_on:
+      - nginx
+
+networks:
+  laravel-net:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
