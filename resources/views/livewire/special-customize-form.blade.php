@@ -19,6 +19,55 @@
     <form wire:submit.prevent="saveCustomization" class="space-y-6">
         @csrf
 
+        <div class="space-y-2 bg-green-50 p-4 rounded-lg border border-green-200">
+            <label class="block text-base font-semibold text-gray-700">
+                Pilih Jenis Produk <span class="text-red-500">*</span>
+
+                {{-- Menampilkan harga dari item yang sedang dipilih --}}
+                @if($productType && ($productTypePrices[$productType] ?? 0) > 0)
+                <span class="text-xs text-green-600 ml-1">
+                    (+Rp {{ number_format($productTypePrices[$productType], 0, ',', '.') }})
+                </span>
+                @endif
+            </label>
+            <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-2 sm:space-y-0 pt-2">
+
+                {{-- Pilihan Piala --}}
+                <label class="flex items-center space-x-2 cursor-pointer p-3 border rounded-lg flex-1 hover:bg-white transition">
+                    <input type="radio" name="product_type" value="piala" wire:model.live="productType" class="text-green-600 focus:ring-green-500 @error('productType') border-red-500 @enderror" required>
+                    <span class="text-sm">Piala
+                        @if(($productTypePrices['piala'] ?? 0) > 0)
+                        <span class="text-xs text-gray-500 ml-1">(+Rp {{ number_format($productTypePrices['piala'], 0, ',', '.') }})</span>
+                        @endif
+                    </span>
+                </label>
+
+                {{-- Pilihan Sertifikat --}}
+                <label class="flex items-center space-x-2 cursor-pointer p-3 border rounded-lg flex-1 hover:bg-white transition">
+                    <input type="radio" name="product_type" value="sertifikat" wire:model.live="productType" class="text-green-600 focus:ring-green-500 @error('productType') border-red-500 @enderror" required>
+                    <span class="text-sm">Sertifikat
+                        @if(($productTypePrices['sertifikat'] ?? 0) > 0)
+                        <span class="text-xs text-gray-500 ml-1">(+Rp {{ number_format($productTypePrices['sertifikat'], 0, ',', '.') }})</span>
+                        @endif
+                    </span>
+                </label>
+
+                {{-- Pilihan Medali --}}
+                <label class="flex items-center space-x-2 cursor-pointer p-3 border rounded-lg flex-1 hover:bg-white transition">
+                    <input type="radio" name="product_type" value="medali" wire:model.live="productType" class="text-green-600 focus:ring-green-500 @error('productType') border-red-500 @enderror" required>
+                    <span class="text-sm">Medali
+                        @if(($productTypePrices['medali'] ?? 0) > 0)
+                        <span class="text-xs text-gray-500 ml-1">(+Rp {{ number_format($productTypePrices['medali'], 0, ',', '.') }})</span>
+                        @endif
+                    </span>
+                </label>
+
+            </div>
+            @error('productType') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+        </div>
+
+        <hr class="border-gray-200">
+
         <div class="space-y-2">
             <label for="custom-text" class="block text-sm font-semibold text-gray-700">
                 Teks Ukiran (Engraving Text) <span class="text-red-500">*</span>
@@ -64,7 +113,7 @@
         <div class="space-y-2">
             <label class="flex items-center space-x-2 cursor-pointer">
                 <input type="checkbox" wire:model.live="enableCustomColorOption" class="text-green-600 focus:ring-green-500" required>
-                <span class="text-sm font-semibold text-gray-700">Pilih Warna Trofi <span class="text-red-500">*</span>
+                <span class="text-sm font-semibold text-gray-700">Pilih Warna <span class="text-red-500">*</span>
                     {{-- Tampilkan harga jika opsi diaktifkan --}}
                     @if($enableCustomColorOption)
                     <span class="text-xs text-green-600 ml-1">(+Rp {{ number_format($this->customColorPrice ?? 0, 0, ',', '.') }})</span>
@@ -201,7 +250,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-2">
                         <label for="custom-height" class="block text-sm font-semibold text-gray-700">
-                            Tinggi Piala (cm) <span class="text-red-500">*</span>
+                            Tinggi (cm) <span class="text-red-500">*</span>
                             @if($this->customHeight !== null && $this->customHeight > 0 && $this->heightPrice > 0)
                             <span class="text-xs text-green-600 ml-1">(+Rp {{ number_format($this->heightPrice, 0, ',', '.') }})</span>
                             @endif
@@ -212,7 +261,7 @@
                     </div>
                     <div class="space-y-2">
                         <label for="custom-width" class="block text-sm font-semibold text-gray-700">
-                            Lebar Piala (cm) <span class="text-red-500">*</span>
+                            Lebar (cm) <span class="text-red-500">*</span>
                             @if($this->customWidth !== null && $this->customWidth > 0 && $this->widthPrice > 0)
                             <span class="text-xs text-green-600 ml-1">(+Rp {{ number_format($this->widthPrice, 0, ',', '.') }})</span>
                             @endif
@@ -245,7 +294,7 @@
                         @endif
                     </label>
                     <input type="file" id="image-file" name="image_file" wire:model="imageFile" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent @error('imageFile') border-red-500 @enderror" required>
-                    <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG. Maks. 2MB. Cocok untuk piala akrilik.</p>
+                    <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG. Maks. 2MB. Cocok untuk akrilik.</p>
                     @error('imageFile') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                     @if ($imageFile)
                     <p class="text-sm text-gray-600 mt-2">File terpilih: {{ $imageFile->getClientOriginalName() }}</p>

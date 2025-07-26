@@ -23,7 +23,7 @@
             <label for="custom-text" class="block text-sm font-semibold text-gray-700">
                 Teks Ukiran (Engraving Text)
             </label>
-            <textarea id="custom-text" name="custom_text" rows="4" maxlength="200" wire:model.live="customText" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none transition duration-200 @error('customText') border-red-500 @enderror" placeholder="Masukkan teks yang ingin diukir pada trofi Anda..."></textarea>
+            <textarea id="custom-text" name="custom_text" rows="4" maxlength="200" wire:model.live="customText" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none transition duration-200 @error('customText') border-red-500 @enderror" placeholder="Masukkan teks yang ingin diukir pada Anda..."></textarea>
             <p class="text-xs text-gray-500">
                 Maksimal 200 karakter. Perhatikan spasi dan tanda baca.
             </p>
@@ -64,7 +64,7 @@
         <div class="space-y-2">
             <label class="flex items-center space-x-2 cursor-pointer">
                 <input type="checkbox" wire:model.live="enableCustomColorOption" class="text-green-600 focus:ring-green-500">
-                <span class="text-sm font-semibold text-gray-700">Pilih Warna Trofi Custom
+                <span class="text-sm font-semibold text-gray-700">Pilih Warna Custom
                     {{-- Tampilkan harga jika opsi diaktifkan --}}
                     @if($enableCustomColorOption)
                     <span class="text-xs text-green-600 ml-1">(+Rp {{ number_format($this->customColorPrice ?? 0, 0, ',', '.') }})</span>
@@ -79,16 +79,17 @@
                 <div class="flex items-center space-x-4">
                     <input type="color" id="custom-color" name="custom_color" wire:model.live="customColor" class="w-16 h-16 rounded-lg border-2 border-gray-300 cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 @error('customColor') border-red-500 @enderror">
                     <div class="flex-1">
-                        <p class="text-sm text-gray-600">Pilih warna dominan untuk trofi Anda.</p>
+                        <p class="text-sm text-gray-600">Pilih warna dominan untuk Anda.</p>
                         <p class="text-xs text-gray-500 mt-1">Warna saat ini: <span id="current-color-hex" class="font-mono">{{ strtoupper($this->customColor) }}</span></p>
                     </div>
                 </div>
                 @error('customColor') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
             </div>
             @else
-            <p id="colorOutputMessage" class="text-sm text-gray-500 pl-6" data-default-color="{{ $this->customColor }}">
-                Warna default {{ strtoupper($this->customColor) }} akan digunakan.
+            <p id="colorOutputMessage" class="text-sm text-gray-500 pl-6">
+                Warna yang akan digunakan : <span class="px-3 py-0.5 border" style="background-color: {{ $selectedProduct['color'] }}"></span>.
             </p>
+
             @endif
         </div>
 
@@ -291,114 +292,3 @@
         </div>
     </form>
 </div>
-
-<script>
-    // --- Helper functions untuk mengkonversi hex ke RGB dan mencari warna terdekat ---
-
-    // Fungsi untuk mengkonversi kode hex warna ke objek RGB
-    function hexToRgb(hex) {
-        let r = 0
-            , g = 0
-            , b = 0;
-        // Handle 3-digit hex (e.g., #F00)
-        if (hex.length === 4) {
-            r = parseInt(hex[1] + hex[1], 16);
-            g = parseInt(hex[2] + hex[2], 16);
-            b = parseInt(hex[3] + hex[3], 16);
-        }
-        // Handle 6-digit hex (e.g., #FF0000)
-        else if (hex.length === 7) {
-            r = parseInt(hex.substring(1, 3), 16);
-            g = parseInt(hex.substring(3, 5), 16);
-            b = parseInt(hex.substring(5, 7), 16);
-        }
-        return {
-            r
-            , g
-            , b
-        };
-    }
-
-    // Fungsi untuk mencari nama warna yang paling mendekati dari daftar `colornames`
-    function getClosestColorName(hexInput) {
-        const cleanHex = hexInput.startsWith('#') ? hexInput : `#${hexInput}`;
-        const targetRgb = hexToRgb(cleanHex);
-
-        let minDistance = Infinity;
-        let closestColorName = "Tidak Diketahui"; // Nama default jika tidak ada yang cocok
-        let closestColorHex = cleanHex; // Hex default
-
-        // Pastikan `colornames` tersedia dan merupakan array
-        if (typeof colornames === 'undefined' || !Array.isArray(colornames) || colornames.length === 0) {
-            console.warn("Daftar warna (colornames) tidak tersedia atau kosong.");
-            return {
-                name: "Tidak Diketahui"
-                , hex: cleanHex
-            };
-        }
-
-        // Pertama, cek apakah ada warna yang cocok persis di daftar
-        for (const color of colornames) {
-            if (color.hex.toLowerCase() === cleanHex.toLowerCase()) {
-                return {
-                    name: color.name
-                    , hex: color.hex
-                }; // Langsung kembalikan jika ada yang cocok persis
-            }
-        }
-
-        // Jika tidak ada yang cocok persis, cari yang terdekat berdasarkan jarak RGB
-        for (const color of colornames) {
-            const listRgb = hexToRgb(color.hex);
-            // Hitung jarak Euclidean di ruang RGB
-            const distance = Math.sqrt(
-                Math.pow(targetRgb.r - listRgb.r, 2) +
-                Math.pow(targetRgb.g - listRgb.g, 2) +
-                Math.pow(targetRgb.b - listRgb.b, 2)
-            );
-
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestColorName = color.name;
-                closestColorHex = color.hex;
-            }
-        }
-
-        return {
-            name: closestColorName
-            , hex: closestColorHex
-        };
-    }
-
-    // --- Livewire Event Listener ---
-    document.addEventListener('livewire:initialized', () => {
-        const colorOutputMessage = document.getElementById('colorOutputMessage');
-
-        // Only proceed if the element exists (meaning enableCustomColorOption is false)
-        if (colorOutputMessage) {
-            // Get the default color from the data attribute
-            const defaultHexColor = colorOutputMessage.dataset.defaultColor;
-
-            // Function to get the formatted color string
-            function getFormattedColorString(hex) {
-                if (!hex) {
-                    return "Warna Tidak Ditemukan";
-                }
-                // *** PENTING: Gunakan fungsi `getClosestColorName` yang baru kita buat ***
-                const result = getClosestColorName(hex);
-                const colorName = result.name;
-                const displayHex = hex.toUpperCase();
-                return `${colorName.toUpperCase()} (${displayHex})`;
-            }
-
-            // Update the message content
-            if (defaultHexColor) {
-                colorOutputMessage.textContent = `Warna default ${getFormattedColorString(defaultHexColor)} akan digunakan.`;
-            } else {
-                // Fallback message if defaultHexColor is somehow empty
-                colorOutputMessage.textContent = `Warna default akan digunakan.`;
-            }
-        }
-    });
-
-</script>

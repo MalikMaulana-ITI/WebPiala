@@ -17,6 +17,11 @@ class Order extends Model
         "isCustomize",
         "customize_id",
         "order_status",
+        "shipping_address",
+        "village_name",
+        "district_name",
+        "regency_name",
+        "province_name",
     ];
 
     public function trophy(): BelongsTo {

@@ -1,13 +1,13 @@
 @include('partials.head')
+
 <body class="bg-[var(--color-background-primary)]">
     <header>
         @section('header')
         @include('partials.navbar')
         @show
     </header>
-    <!-- Full-screen Donation Modal -->
 
-    <section class="min-h-screen bg-gray-800  flex items-center">
+    <section class="min-h-screen bg-gray-800 flex items-center">
         <div class="container mx-auto px-6 py-12 lg:py-24 max-w-7xl">
             <div class="flex flex-col lg:flex-row items-center justify-between">
                 <div class="lg:w-1/2 mb-12 lg:mb-0">
@@ -19,125 +19,91 @@
                         Kami siap membantu Anda menciptakan piala unik yang dapat dikustomisasi sepenuhnya
                         untuk setiap momen penghargaan.
                     </p>
-                    {{-- <button class="px-8 py-4 text-white text-lg font-medium font-poppins uppercase bg-green-800 rounded-[3px] shadow-lg hover:bg-green-700 transition-colors cursor-pointer">
-                        Lihat Koleksi Piala Kami
-                    </button> --}}
+                    <a href="#koleksi" class="inline-block px-8 py-4 text-white text-lg font-medium font-poppins uppercase bg-yellow-500 rounded-[3px] shadow-lg hover:bg-yellow-600 transition-colors cursor-pointer">
+                        Lihat Koleksi Piala
+                    </a>
                 </div>
                 <div class="lg:w-1/2 flex justify-center">
-                    <img class="w-full max-w-xl rounded-lg shadow-xl" src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="Children benefiting from donations" />
+                    <img class="w-full max-w-xl rounded-lg shadow-xl" src="https://c.inilah.com/reborn/2025/02/4fvq_Svc_MD_Vq6nw_G47osy4ykw_Ax_L004t_Ow_C0r_X_Smb_1294388315_8d491d802b.webp" alt="Koleksi piala dan penghargaan" />
                 </div>
             </div>
         </div>
     </section>
 
     <section class="min-h-screen flex items-center">
-        <div class="w-full mx-auto px-4  max-w-7xl">
-            <!-- Header -->
+        <div class="w-full mx-auto px-4 max-w-7xl">
             <div class="text-center mb-12">
-                <h1 class="text-4xl font-bold text-white mb-4">Frequently Asked Questions</h1>
-                <p class="text-lg text-white">Find answers to common questions about our products and services.</p>
+                <h1 class="text-4xl font-bold text-white mb-4">Pertanyaan yang Sering Diajukan (FAQ)</h1>
+                <p class="text-lg text-white">Temukan jawaban untuk pertanyaan umum seputar produk dan layanan kustomisasi piala kami.</p>
             </div>
 
-            <!-- Search Bar -->
-            {{-- <div class="mb-10">
-                    <div class="relative max-w-xl mx-auto">
-                        <input type="text" placeholder="Search FAQs..." class="w-full px-5 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                        <button class="absolute right-3 top-3 text-white hover:text-indigo-600">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div> --}}
-
-            <!-- FAQ Categories -->
-            {{-- <div class="flex flex-wrap justify-center gap-3 mb-10">
-                    <button class="px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-whittext-white transition">All</button>
-                    <button class="px-4 py-2 bg-white text-indigo-600 border border-indigo-600 rounded-full hover:bg-indigo-50 transition">Account</button>
-                    <button class="px-4 py-2 bg-white text-indigo-600 border border-indigo-600 rounded-full hover:bg-indigo-50 transition">Billing</button>
-                    <button class="px-4 py-2 bg-white text-indigo-600 border border-indigo-600 rounded-full hover:bg-indigo-50 transition">Features</button>
-                    <button class="px-4 py-2 bg-white text-indigo-600 border border-indigo-600 rounded-full hover:bg-indigo-50 transition">Support</button>
-                </div> --}}
-
-            <!-- FAQ Items -->
             <div class="space-y-4">
-                <!-- FAQ Item 1 -->
                 <div class="bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
                     <button class="faq-toggle w-full flex justify-between items-center p-6 text-left cursor-pointer">
-                        <h3 class="text-lg font-semibold text-white">How do I create an account?</h3>
-                        <i class="fas fa-chevron-down text-indigo-600 transition-transform duration-300"></i>
+                        <h3 class="text-lg font-semibold text-white">Bisakah saya membuat desain piala sendiri?</h3>
+                        <i class="fas fa-chevron-down text-yellow-500 transition-transform duration-300"></i>
                     </button>
                     <div class="faq-content px-6 pb-6 hidden">
                         <p class="text-white">
-                            To create an account, click on the "Sign Up" button at the top right corner of our website.
-                            You'll need to provide your email address, create a password, and fill in some basic information.
-                            After verification, your account will be ready to use.
+                            Tentu saja! Kami sangat mendukung kreativitas Anda. Anda bisa mengirimkan sketsa, file desain (format .cdr, .ai, .psd), atau sekadar ide konsep Anda kepada tim kami. Kami akan membantu mewujudkannya menjadi piala yang nyata.
                         </p>
                     </div>
                 </div>
 
-                <!-- FAQ Item 2 -->
                 <div class="bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
                     <button class="faq-toggle w-full flex justify-between items-center p-6 text-left cursor-pointer">
-                        <h3 class="text-lg font-semibold text-white">What payment methods do you accept?</h3>
-                        <i class="fas fa-chevron-down text-indigo-600 transition-transform duration-300"></i>
+                        <h3 class="text-lg font-semibold text-white">Berapa lama waktu pengerjaan untuk pesanan piala kustom?</h3>
+                        <i class="fas fa-chevron-down text-yellow-500 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content px-6 pb-6 hidden">
+                        <p class="text-white">
+                            Waktu pengerjaan bervariasi tergantung pada kompleksitas desain dan jumlah pesanan. Secara umum, prosesnya memakan waktu 7-14 hari kerja setelah desain disetujui. Untuk pesanan dalam jumlah besar, kami akan memberikan estimasi waktu yang lebih spesifik.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left cursor-pointer">
+                        <h3 class="text-lg font-semibold text-white">Material apa saja yang tersedia untuk piala?</h3>
+                        <i class="fas fa-chevron-down text-yellow-500 transition-transform duration-300"></i>
                     </button>
                     <div class="faq-content px-6 pb-6 hidden">
                         <p class="text-white mb-3">
-                            We accept all major credit cards including Visa, MasterCard, American Express, and Discover.
-                            We also support payments through PayPal and bank transfers for certain plans.
+                            Kami menyediakan berbagai pilihan material berkualitas untuk memenuhi kebutuhan Anda, di antaranya:
                         </p>
                         <ul class="list-disc pl-5 text-white">
-                            <li>Credit/Debit Cards</li>
-                            <li>PayPal</li>
-                            <li>Bank Transfers (for annual plans)</li>
+                            <li>Akrilik (Acrylic)</li>
+                            <li>Logam (Kuningan, Stainless Steel)</li>
+                            <li>Kristal (Crystal)</li>
+                            <li>Kayu (Wood)</li>
+                            <li>Resin</li>
                         </ul>
-                    </div>
-                </div>
-
-                <!-- FAQ Item 3 -->
-                <div class="bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
-                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left cursor-pointer">
-                        <h3 class="text-lg font-semibold text-white">Can I cancel my subscription anytime?</h3>
-                        <i class="fas fa-chevron-down text-indigo-600 transition-transform duration-300"></i>
-                    </button>
-                    <div class="faq-content px-6 pb-6 hidden">
-                        <p class="text-white">
-                            Yes, you can cancel your subscription at any time. If you cancel during your billing period,
-                            you'll continue to have access to our services until the end of that period. We don't charge
-                            any cancellation fees.
+                        <p class="text-white mt-3">
+                            Anda juga bisa mengkombinasikan beberapa material untuk hasil yang unik dan eksklusif.
                         </p>
                     </div>
                 </div>
 
-                <!-- FAQ Item 4 -->
                 <div class="bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
                     <button class="faq-toggle w-full flex justify-between items-center p-6 text-left cursor-pointer">
-                        <h3 class="text-lg font-semibold text-white">How do I reset my password?</h3>
-                        <i class="fas fa-chevron-down text-indigo-600 transition-transform duration-300"></i>
-                    </button>
-                    <div class="faq-content px-6 pb-6 hidden">
-                        <p class="text-white mb-3">
-                            To reset your password:
-                        </p>
-                        <ol class="list-decimal pl-5 text-white space-y-2">
-                            <li>Go to the login page and click "Forgot password"</li>
-                            <li>Enter the email address associated with your account</li>
-                            <li>Check your email for a password reset link</li>
-                            <li>Click the link and follow the instructions to create a new password</li>
-                        </ol>
-                    </div>
-                </div>
-
-                <!-- FAQ Item 5 -->
-                <div class="bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
-                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left cursor-pointer">
-                        <h3 class="text-lg font-semibold text-white">Is there a mobile app available?</h3>
-                        <i class="fas fa-chevron-down text-indigo-600 transition-transform duration-300"></i>
+                        <h3 class="text-lg font-semibold text-white">Apakah ada jumlah minimum pemesanan?</h3>
+                        <i class="fas fa-chevron-down text-yellow-500 transition-transform duration-300"></i>
                     </button>
                     <div class="faq-content px-6 pb-6 hidden">
                         <p class="text-white">
-                            Yes! We have mobile apps available for both iOS and Android devices. You can download them from
-                            the App Store or Google Play Store. All your data will sync automatically between the web version
-                            and mobile apps.
+                            Untuk sebagian besar piala di katalog kami, tidak ada minimum pemesanan (bisa pesan satuan). Namun, untuk desain kustom yang memerlukan cetakan khusus, mungkin akan ada jumlah minimum pemesanan. Silakan hubungi kami untuk mendiskusikan kebutuhan spesifik Anda.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                    <button class="faq-toggle w-full flex justify-between items-center p-6 text-left cursor-pointer">
+                        <h3 class="text-lg font-semibold text-white">Bagaimana proses pengiriman dan apakah aman?</h3>
+                        <i class="fas fa-chevron-down text-yellow-500 transition-transform duration-300"></i>
+                    </button>
+                    <div class="faq-content px-6 pb-6 hidden">
+                        <p class="text-white">
+                            Kami sangat memperhatikan keamanan pengiriman. Setiap piala akan dikemas dengan bubble wrap tebal dan kotak yang kokoh untuk meminimalisir risiko kerusakan. Kami bekerja sama dengan jasa ekspedisi terpercaya untuk memastikan pesanan Anda tiba dengan selamat di seluruh Indonesia.
                         </p>
                     </div>
                 </div>
@@ -151,7 +117,6 @@
         @show
     </footer>
 
-    <!-- JavaScript for FAQ functionality -->
     <script>
         document.querySelectorAll('.faq-toggle').forEach(button => {
             button.addEventListener('click', () => {
@@ -159,14 +124,20 @@
                 const icon = button.querySelector('i');
 
                 // Toggle content visibility
-                content.classList.toggle('hidden');
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                    content.classList.add('hidden');
+                } else {
+                    content.classList.remove('hidden');
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
 
                 // Rotate icon
-                icon.classList.toggle('transform');
                 icon.classList.toggle('rotate-180');
             });
         });
 
     </script>
 </body>
+
 </html>

@@ -44,7 +44,6 @@ class OrderResource extends Resource
                             ->maxLength(255),
                         Forms\Components\Select::make('trophy_id')
                             ->relationship('trophy', 'name')
-                            ->required()
                             ->searchable()
                             ->preload()
                             ->getOptionLabelFromRecordUsing(fn($record) => $record->name ?? '[Nama Trofi Tidak Tersedia]'),
@@ -179,10 +178,26 @@ class OrderResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('trophy.name')
                     ->label('Trophy')
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\IconColumn::make('isCustomize')
                     ->label('Customized')
                     ->boolean(),
+                Tables\Columns\TextColumn::make('shipping_address')
+                    ->label('Alamat')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('village_name')
+                    ->label('Kelurahan')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('district_name')
+                    ->label('Kecamatan')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('regency_name')
+                    ->label('Kota/Kab')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('province_name')
+                    ->label('Provinsi')
+                    ->sortable(),
                 // Untuk detail kustomisasi, kita perlu mengakses JSON
                 Tables\Columns\TextColumn::make('customize.customize.customText') // Akses path JSON
                     ->label('Teks Kustomisasi')

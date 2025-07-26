@@ -13,13 +13,16 @@ class SpecialCustomizeForm extends Component
 {
     use WithFileUploads;
 
+    public $productType = 'piala';
+    public $productTypePrices = [];
+
     public $selectedProduct; // This will now be initialized by the mount method
 
     // Properti kustomisasi yang sudah ada
     public $customText;
     public $customColor;
-    public $fontStyle = 'sans-serif'; // Nilai default
-    public $textSize = 'medium';    // Nilai default
+    public $fontStyle = 'sans-serif';
+    public $textSize = 'medium';
 
     // Properti kustomisasi baru
     public $uniqueShapeDescription;
@@ -28,7 +31,7 @@ class SpecialCustomizeForm extends Component
     public $additionalComponentsDescription;
     public $logoFile;
     public $imageFile;
-    public $surfaceFinishing = 'doff'; // Nilai default
+    public $surfaceFinishing = 'doff';
     public $ribbonColor;
     public $premiumBox = false;
     public $boxTextLogo;
@@ -87,6 +90,7 @@ class SpecialCustomizeForm extends Component
 
     // Aturan validasi
     protected $rules = [
+        'productType' => 'required|string|in:piala,sertifikat,medali',
         'customText' => 'required|string|max:200',
         'customColor' => 'required|string|size:7|starts_with:#|not_in:#000000',
         'fontStyle' => 'required|string|in:serif,sans-serif,script,monospace',
@@ -114,12 +118,19 @@ class SpecialCustomizeForm extends Component
 
     public function mount() // No $selectedProduct passed from outside on mount
     {
+
+        $this->productTypePrices = [
+            'piala' => 50000,
+            'sertifikat' => 15000,
+            'medali' => 25000,
+        ];
+
         // Initialize selectedProduct for a completely new, custom item
         // This simulates the structure of a product chosen from the catalog,
         // but with all values defaulting to empty/zero for a custom build.
         $this->selectedProduct = [
             'id' => 'special-custom-' . uniqid(), // A unique ID for this custom build instance
-            'name' => 'Trophy Kustom (Desain Sendiri)',
+            'name' => ucfirst($this->productType) . ' Kustom (Desain Sendiri)',
             'image' => 'images/piala.png', // Path to a generic default image for custom trophies
             'base_price' => 0, // No base price, cost is purely from customization
             'selected_material_id' => null,
@@ -171,6 +182,11 @@ class SpecialCustomizeForm extends Component
         // enableMaterialOption is set above based on whether materials exist
     }
 
+    public function updatedProductType($value)
+    {
+        $this->selectedProduct['name'] = ucfirst($value) . ' Kustom (Desain Sendiri)';
+    }
+
     public function updatedCustomHeight($value)
     {
         $this->customHeight = ($value === '' || $value === null) ? null : (float) $value;
@@ -185,6 +201,8 @@ class SpecialCustomizeForm extends Component
     public function getCustomizationTotalPriceProperty()
     {
         $totalCustomizationPrice = 0;
+
+         $totalCustomizationPrice += $this->productTypePrices[$this->productType] ?? 0;
 
         // Warna (hanya jika opsi diaktifkan dan bukan default)
         if ($this->enableCustomColorOption) {
@@ -211,13 +229,13 @@ class SpecialCustomizeForm extends Component
         // Desain dan Bentuk (hanya jika opsi diaktifkan dan ada data)
         if ($this->enableCustomDesignOption) {
             $hasCustomDesignInput = !empty($this->uniqueShapeDescription) ||
-                                    ($this->customHeight !== null && $this->customHeight > 0) ||
-                                    ($this->customWidth !== null && $this->customWidth > 0) ||
-                                    !empty($this->additionalComponentsDescription) ||
-                                    $this->imageFile;
+                ($this->customHeight !== null && $this->customHeight > 0) ||
+                ($this->customWidth !== null && $this->customWidth > 0) ||
+                !empty($this->additionalComponentsDescription) ||
+                $this->imageFile;
 
             if ($hasCustomDesignInput) {
-                 $totalCustomizationPrice += $this->uniqueShapeBasePrice;
+                $totalCustomizationPrice += $this->uniqueShapeBasePrice;
             }
 
             if ($this->customHeight !== null && is_numeric($this->customHeight) && $this->customHeight > 0) {
@@ -325,6 +343,7 @@ class SpecialCustomizeForm extends Component
             // Prepare customization data
             $customizeData = [
                 // 'trophy_id' => null,
+                'product_type' => $this->productType,
                 'custom_text' => $this->customText,
                 'custom_color' => $this->enableCustomColorOption ? $this->customColor : null, // Store null if option not enabled
                 'font_style' => $this->enableCustomFontStyleOption ? $this->fontStyle : null, // Store null if option not enabled
@@ -370,7 +389,6 @@ class SpecialCustomizeForm extends Component
             session()->flash('success', 'Kustomisasi berhasil disimpan dan akan dilanjutkan ke checkout.');
 
             return redirect()->route('checkout');
-
         } catch (\Exception $e) {
             session()->flash('error', 'Terjadi kesalahan saat menyimpan kustomisasi: ' . $e->getMessage());
             // In development, you might want to log this for more detail:

@@ -14,10 +14,10 @@
             <!-- Page Title -->
             <div class="text-center mb-8 md:mb-12 animate-fade-in-up">
                 <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-                    Kustomisasi Trofi Anda
+                    Kustomisasi sesuai keinginan Anda
                 </h1>
                 <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-                    Personalisasi trofi Anda dengan teks ukiran dan warna pilihan untuk hasil yang sempurna.
+                    Personalisasi dengan teks ukiran dan warna pilihan untuk hasil yang sempurna.
                 </p>
             </div>
 

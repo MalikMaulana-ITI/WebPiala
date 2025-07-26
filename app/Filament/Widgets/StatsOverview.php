@@ -28,7 +28,7 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-o-shopping-bag')
                 ->color('info'),
             Stat::make('Pesanan Pending', $pendingOrders)
-                ->description('Pesanan menunggu pembayaran/konfirmasi')
+                ->description('Pesanan menunggu konfirmasi')
                 ->descriptionIcon('heroicon-o-clock')
                 ->color('warning'),
             Stat::make('Pesanan Selesai (Dibayar)', $paidOrders)

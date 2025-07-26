@@ -10,29 +10,55 @@ use App\Models\Order; // Import Order model
 use App\Models\Invoice; // Import Invoice model
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB; // For database transactions
+use Illuminate\Validation\ValidationException; // Import ValidationException
 
 class CheckoutController extends Controller
 {
     public function index()
     {
         $selectedProduct = session('selected_product');
-        // dd($selectedProduct);    
         return view("pages.product.checkout", compact('selectedProduct'));
     }
 
     public function processCheckout(Request $request)
     {
         // 1. Validate the request data
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'phone_number' => 'required|string|max:20',
-            'shipping_address' => 'required|string',
-            'country' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            // Add validation rules for other fields as needed
-        ]);
+        try {
+            $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|string|email:rfc,dns|max:255', // Improved email validation
+                'phone_number' => 'required|string|min:7|max:15|regex:/^[0-9]+$/', // Phone number validation
+                'shipping_address' => 'required|string|max:500', // Added max length for address
+            ], [
+                // Custom error messages
+                'first_name.required' => 'Nama depan wajib diisi.',
+                'first_name.string' => 'Nama depan harus berupa teks.',
+                'first_name.max' => 'Nama depan tidak boleh lebih dari 255 karakter.',
+                'last_name.required' => 'Nama belakang wajib diisi.',
+                'last_name.string' => 'Nama belakang harus berupa teks.',
+                'last_name.max' => 'Nama belakang tidak boleh lebih dari 255 karakter.',
+                'email.required' => 'Alamat email wajib diisi.',
+                'email.string' => 'Alamat email harus berupa teks.',
+                'email.email' => 'Format alamat email tidak valid.',
+                'email.max' => 'Alamat email tidak boleh lebih dari 255 karakter.',
+                'phone_number.required' => 'Nomor telepon wajib diisi.',
+                'phone_number.string' => 'Nomor telepon harus berupa teks.',
+                'phone_number.min' => 'Nomor telepon harus memiliki setidaknya 7 karakter.',
+                'phone_number.max' => 'Nomor telepon tidak boleh lebih dari 15 karakter.',
+                'phone_number.regex' => 'Nomor telepon hanya boleh berisi angka.',
+                'shipping_address.required' => 'Alamat pengiriman wajib diisi.',
+                'shipping_address.string' => 'Alamat pengiriman harus berupa teks.',
+                'shipping_address.max' => 'Alamat pengiriman tidak boleh lebih dari 500 karakter.',
+                'province_name.required' => 'Nama provinsi wajib diisi (error internal).',
+                'regency_name.required' => 'Nama kabupaten/kota wajib diisi (error internal).',
+                'district_name.required' => 'Nama kecamatan wajib diisi (error internal).',
+                'village_name.required' => 'Nama kelurahan wajib diisi (error internal).',
+            ]);
+        } catch (ValidationException $e) {
+            // Return validation errors as JSON
+            return response()->json(['errors' => $e->errors()], 422);
+        }
 
         $selectedProduct = session('selected_product');
 
@@ -51,14 +77,25 @@ class CheckoutController extends Controller
                 }
             }
 
+            $fullShippingAddress = $request->input('shipping_address') . ', ' .
+                                   $request->input('village_name') . ', ' .
+                                   $request->input('district_name') . ', ' .
+                                   $request->input('regency_name') . ', ' .
+                                   $request->input('province_name');
+
             // 2. Save Order Details
             $order = Order::create([
                 'buyer_name' => $request->input('first_name') . ' ' . $request->input('last_name'),
                 'phone_number' => $request->input('phone_number'),
                 'email' => $request->input('email'),
                 'trophy_id' => $trophyID,
-                'isCustomize' => $selectedProduct['isCustomize'] ?? false, // <-- Gunakan 'isCustomize'
+                'isCustomize' => $selectedProduct['isCustomize'] ?? false,
                 'customize_id' => $selectedProduct['customize_id'] ?? null,
+                'shipping_address' => $fullShippingAddress,
+                'village_name' => $request->input('village_name'),
+                'district_name' => $request->input('district_name'),
+                'regency_name'=> $request->input('regency_name'),
+                'province_name'=> $request->input('province_name'),
             ]);
 
             // 3. Save Invoice Details
@@ -88,10 +125,10 @@ class CheckoutController extends Controller
                     'first_name'    => $request->input('first_name'),
                     'last_name'     => $request->input('last_name'),
                     'phone'         => $request->input('phone_number'),
-                    'address'       => $request->input('shipping_address'),
-                    'city'          => $request->input('city'),
-                    'postal_code'   => '12345', // You might need to add a postal code field
-                    'country_code'  => 'IDN', // Or dynamically set based on country input
+                    'address'       => $fullShippingAddress, // Full address string sent to Midtrans
+                    'city'          => $request->input('regency_name'), // Use regency name as city for Midtrans
+                    'postal_code'   => '12345', // Consider adding this field to your form
+                    'country_code'  => 'IDN',
                 ],
             ];
 
@@ -131,7 +168,9 @@ class CheckoutController extends Controller
             return response()->json(['snap_token' => $snapToken]);
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback on error
-            return response()->json(['error' => $e->getMessage()], 500);
+            // Log the error for debugging purposes
+            \Log::error('Checkout process failed: ' . $e->getMessage());
+            return response()->json(['error' => 'Terjadi kesalahan saat memproses checkout. Silakan coba lagi.'], 500);
         }
     }
 
@@ -147,16 +186,28 @@ class CheckoutController extends Controller
 
         $notification = new Notification();
 
-        $transactionStatus = $notification->transaction_status;
         $orderId = $notification->order_id; // This is the invoice_number we sent to Midtrans
-        $fraudStatus = $notification->fraud_status;
+        $serverKey = config('midtrans.server_key');
+        $statusCode = $notification->status_code;
+        $grossAmount = $notification->gross_amount;
+        $signature = $notification->signature_key;
+
+        $mySignatureKey = hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+
+        if ($signature !== $mySignatureKey) {
+            return response('Invalid signature', 403); // Tolak akses jika signature tidak valid
+        }
+
         $midtransTransactionId = $notification->transaction_id; // Midtrans's unique transaction ID
+        $transactionStatus = $notification->transaction_status;
+        $fraudStatus = $notification->fraud_status;
 
         // Find the invoice using the orderId (which is our invoice_number)
         $invoice = Invoice::where('invoice_number', $orderId)->first();
 
         if (!$invoice) {
             // Log error: Invoice not found
+            \Log::error("Midtrans Notification: Invoice not found for order_id: " . $orderId);
             return response('Invoice not found', 404);
         }
 
@@ -190,6 +241,7 @@ class CheckoutController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             // Log error: Failed to update invoice status
+            \Log::error('Error updating invoice status from Midtrans notification: ' . $e->getMessage());
             return response('Error updating invoice status: ' . $e->getMessage(), 500);
         }
     }

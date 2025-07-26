@@ -12,9 +12,12 @@ class CatalogController extends Controller
 {
     public function index()
     {
+        Session::flush();
 
-        $trophies = Trophy::with('trophyMaterial')->get();
-        $allMaterials = TrophyMaterial::all();
-        return view("pages.catalog", compact('trophies', 'allMaterials'));
+        // $trophies = Trophy::with('trophyMaterial')->get();
+        // $allMaterials = TrophyMaterial::all();
+        // return view("pages.catalog", compact('trophies', 'allMaterials'));
+
+        return view("pages.catalog");
     }
 }

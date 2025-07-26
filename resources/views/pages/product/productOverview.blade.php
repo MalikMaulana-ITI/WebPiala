@@ -125,7 +125,7 @@
                         <h3 class="text-lg font-semibold text-gray-800 mb-3">Warna</h3>
                         <div class="flex flex-wrap gap-2">
                             @if($selectedProduct['color'])
-                            <button class="colour-option px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active" data-color="{{ $selectedProduct['color'] }}">{{ $selectedProduct['color'] }}</button>
+                            <button class="colour-option px-10 py-6 border border-gray-300 rounded-md text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active" data-color="{{ $selectedProduct['color'] }}" style="background-color: {{ $selectedProduct['color'] }}"></button>
                             @else
                             <span class="text-gray-500 text-sm">Tidak ada pilihan warna spesifik.</span>
                             @endif

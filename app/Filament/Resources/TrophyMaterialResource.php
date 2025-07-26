@@ -19,6 +19,9 @@ class TrophyMaterialResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+     protected static ?string $navigationLabel = 'Product Material';
+
+
     public static function form(Form $form): Form
     {
         return $form
